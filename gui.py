@@ -1,31 +1,11 @@
 import os
-import subprocess
-import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
+import utils  # ensures customtkinter is installed
+import customtkinter as ctk
 
-def install_package(package):
-    try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package],
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("Install Error", f"Failed to install {package}:\n{e}")
-        sys.exit(1)
-
-
-try:
-    from pypdf import PdfWriter, PdfReader
-except ImportError:
-    install_package("pypdf")
-    from pypdf import PdfWriter, PdfReader
-
-try:
-    import customtkinter as ctk
-except ImportError:
-    install_package("customtkinter")
-    import customtkinter as ctk
-
+from merger import validate_pdfs, merge_pdfs
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -40,17 +20,6 @@ def pick_files():
     )
     root.destroy()
     return list(paths)
-
-
-def validate_pdfs(paths):
-    invalid = [p for p in paths if not p.lower().endswith(".pdf")]
-    if invalid:
-        messagebox.showerror(
-            "Invalid Files",
-            "The following files are not PDFs:\n" + "\n".join(invalid),
-        )
-        return False
-    return True
 
 
 class ReorderWindow:
@@ -118,7 +87,6 @@ class ReorderWindow:
             )
             name_label.pack(side="left", padx=(0, 8), pady=6, fill="x", expand=True)
 
-            # Capture i in the closure
             for widget in (row, index_label, name_label):
                 widget.bind("<Button-1>", lambda _, idx=i: self._select(idx))
 
@@ -161,16 +129,6 @@ def pick_output_path(first_input_path):
     return path
 
 
-def merge_pdfs(paths, output_path):
-    writer = PdfWriter()
-    for path in paths:
-        for page in PdfReader(path).pages:
-            writer.add_page(page)
-    with open(output_path, "wb") as f:
-        writer.write(f)
-    writer.close()
-
-
 def main():
     paths = pick_files()
 
@@ -194,7 +152,3 @@ def main():
         messagebox.showinfo("Success", f"PDFs merged successfully!\n\nSaved to:\n{output_path}")
     except Exception as e:
         messagebox.showerror("Merge Error", f"An error occurred during merging:\n{e}")
-
-
-if __name__ == "__main__":
-    main()
