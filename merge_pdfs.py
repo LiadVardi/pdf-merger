@@ -20,6 +20,16 @@ except ImportError:
     install_package("pypdf")
     from pypdf import PdfWriter, PdfReader
 
+try:
+    import customtkinter as ctk
+except ImportError:
+    install_package("customtkinter")
+    import customtkinter as ctk
+
+
+ctk.set_appearance_mode("System")
+ctk.set_default_color_theme("blue")
+
 
 def pick_files():
     root = tk.Tk()
@@ -47,62 +57,90 @@ class ReorderWindow:
     def __init__(self, paths):
         self.paths = list(paths)
         self.confirmed = False
+        self.selected_idx = 0
 
-        self.root = tk.Tk()
-        self.root.title("Set Merge Order")
+        self.root = ctk.CTk()
+        self.root.title("PDF Merger — Set Merge Order")
         self.root.resizable(False, False)
 
-        tk.Label(self.root, text="Use Up / Down to set the merge order, then click Merge.",
-                 padx=10, pady=8).pack()
+        ctk.CTkLabel(
+            self.root,
+            text="Select a file, then use Up / Down to reorder. Click Merge when ready.",
+            font=ctk.CTkFont(size=13),
+        ).pack(padx=20, pady=(16, 8))
 
-        frame = tk.Frame(self.root)
-        frame.pack(padx=10, pady=4)
-
-        self.listbox = tk.Listbox(frame, selectmode=tk.SINGLE, width=60, height=12)
-        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH)
-
-        scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=self.listbox.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.listbox.config(yscrollcommand=scrollbar.set)
+        self.scroll_frame = ctk.CTkScrollableFrame(self.root, width=500, height=240)
+        self.scroll_frame.pack(padx=20, pady=4, fill="both")
 
         self._refresh()
-        self.listbox.selection_set(0)
 
-        btn_frame = tk.Frame(self.root)
-        btn_frame.pack(pady=6)
+        btn_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        btn_frame.pack(pady=14)
 
-        tk.Button(btn_frame, text="Up",   width=8, command=self._move_up).pack(side=tk.LEFT, padx=4)
-        tk.Button(btn_frame, text="Down", width=8, command=self._move_down).pack(side=tk.LEFT, padx=4)
-        tk.Button(btn_frame, text="Merge", width=10, command=self._merge,
-                  bg="#2d7d46", fg="white").pack(side=tk.LEFT, padx=12)
+        ctk.CTkButton(btn_frame, text="Up",   width=90, command=self._move_up).pack(side="left", padx=6)
+        ctk.CTkButton(btn_frame, text="Down", width=90, command=self._move_down).pack(side="left", padx=6)
+        ctk.CTkButton(
+            btn_frame, text="Merge", width=110,
+            fg_color="#2d7d46", hover_color="#235e34",
+            command=self._merge,
+        ).pack(side="left", padx=14)
 
         self.root.protocol("WM_DELETE_WINDOW", self.root.destroy)
         self.root.mainloop()
 
     def _refresh(self):
-        self.listbox.delete(0, tk.END)
-        for p in self.paths:
-            self.listbox.insert(tk.END, os.path.basename(p))
+        for widget in self.scroll_frame.winfo_children():
+            widget.destroy()
 
-    def _selected(self):
-        sel = self.listbox.curselection()
-        return sel[0] if sel else None
+        for i, path in enumerate(self.paths):
+            is_selected = (i == self.selected_idx)
+            row = ctk.CTkFrame(
+                self.scroll_frame,
+                fg_color=("#c9daf8" if is_selected else "transparent"),
+                corner_radius=6,
+            )
+            row.pack(fill="x", pady=2, padx=4)
+
+            index_label = ctk.CTkLabel(
+                row,
+                text=f"{i + 1}.",
+                width=28,
+                font=ctk.CTkFont(size=13, weight="bold"),
+                anchor="e",
+            )
+            index_label.pack(side="left", padx=(8, 4), pady=6)
+
+            name_label = ctk.CTkLabel(
+                row,
+                text=os.path.basename(path),
+                font=ctk.CTkFont(size=13),
+                anchor="w",
+            )
+            name_label.pack(side="left", padx=(0, 8), pady=6, fill="x", expand=True)
+
+            # Capture i in the closure
+            for widget in (row, index_label, name_label):
+                widget.bind("<Button-1>", lambda _, idx=i: self._select(idx))
+
+    def _select(self, idx):
+        self.selected_idx = idx
+        self._refresh()
 
     def _move_up(self):
-        idx = self._selected()
-        if idx is None or idx == 0:
+        idx = self.selected_idx
+        if idx == 0:
             return
         self.paths[idx - 1], self.paths[idx] = self.paths[idx], self.paths[idx - 1]
+        self.selected_idx = idx - 1
         self._refresh()
-        self.listbox.selection_set(idx - 1)
 
     def _move_down(self):
-        idx = self._selected()
-        if idx is None or idx == len(self.paths) - 1:
+        idx = self.selected_idx
+        if idx == len(self.paths) - 1:
             return
         self.paths[idx + 1], self.paths[idx] = self.paths[idx], self.paths[idx + 1]
+        self.selected_idx = idx + 1
         self._refresh()
-        self.listbox.selection_set(idx + 1)
 
     def _merge(self):
         self.confirmed = True
