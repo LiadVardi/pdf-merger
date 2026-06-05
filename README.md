@@ -36,7 +36,7 @@ A modern desktop application for merging multiple PDF files into one. Built with
 - **Splash screen** — branded loading screen shown during startup so the app never feels frozen
 - **Multi-file selection** — pick any number of PDF files from anywhere on the filesystem
 - **PDF validation** — detects and reports non-PDF files before any processing begins, with a clear error dialog listing each invalid file by name
-- **Drag-to-reorder** — intuitive Up / Down controls let the user set the exact merge order before committing
+- **Up / Down reordering** — intuitive Up / Down controls let the user set the exact merge order before committing
 - **Back navigation** — return to the file picker from the reorder window without restarting the app
 - **Custom save location** — choose the output filename and folder via a native save dialog; defaults to the source folder
 - **Styled dialogs** — success and error feedback rendered as CustomTkinter dialogs consistent with the rest of the UI
