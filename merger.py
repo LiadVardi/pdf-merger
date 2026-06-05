@@ -1,5 +1,3 @@
-import os
-
 import utils  # ensures pypdf is installed
 from pypdf import PdfWriter, PdfReader
 
