@@ -147,21 +147,28 @@ class ReorderWindow:
         self.root.destroy()
 
 
-def merge_pdfs(paths):
-    output_dir = os.path.dirname(paths[0])
-    output_path = os.path.join(output_dir, "Combined_file.pdf")
+def pick_output_path(first_input_path):
+    root = tk.Tk()
+    root.withdraw()
+    path = filedialog.asksaveasfilename(
+        title="Save merged PDF as",
+        defaultextension=".pdf",
+        filetypes=[("PDF files", "*.pdf")],
+        initialfile="Combined_file.pdf",
+        initialdir=os.path.dirname(first_input_path),
+    )
+    root.destroy()
+    return path
 
+
+def merge_pdfs(paths, output_path):
     writer = PdfWriter()
     for path in paths:
-        reader = PdfReader(path)
-        for page in reader.pages:
+        for page in PdfReader(path).pages:
             writer.add_page(page)
-
     with open(output_path, "wb") as f:
         writer.write(f)
-
     writer.close()
-    return output_path
 
 
 def main():
@@ -178,8 +185,12 @@ def main():
     if not window.confirmed:
         return
 
+    output_path = pick_output_path(window.paths[0])
+    if not output_path:
+        return
+
     try:
-        output_path = merge_pdfs(window.paths)
+        merge_pdfs(window.paths, output_path)
         messagebox.showinfo("Success", f"PDFs merged successfully!\n\nSaved to:\n{output_path}")
     except Exception as e:
         messagebox.showerror("Merge Error", f"An error occurred during merging:\n{e}")
