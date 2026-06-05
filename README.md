@@ -18,16 +18,16 @@ A modern desktop application for merging multiple PDF files into one. Built with
 <p align="center"><img src="screenshots/file_picker.png" width="600"></p>
 
 ### 3. Reorder Window
-<p align="center"><img src="screenshots/reorder.png" width="600"></p>
+<p align="center"><img src="screenshots/reorder.png" width="500"></p>
 
 ### 4. Save Dialog
 <p align="center"><img src="screenshots/save_dialog.png" width="600"></p>
 
 ### 5. Success Dialog
-<p align="center"><img src="screenshots/success.png" width="400"></p>
+<p align="center"><img src="screenshots/success.png" width="300"></p>
 
 ### 6. Invalid Files Dialog
-<p align="center"><img src="screenshots/invalid_files.png" width="400"></p>
+<p align="center"><img src="screenshots/invalid_files.png" width="300"></p>
 
 ---
 
