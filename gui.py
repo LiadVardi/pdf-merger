@@ -26,6 +26,7 @@ class ReorderWindow:
     def __init__(self, paths):
         self.paths = list(paths)
         self.confirmed = False
+        self.go_back = False
         self.selected_idx = 0
 
         self.root = ctk.CTk()
@@ -46,6 +47,7 @@ class ReorderWindow:
         btn_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         btn_frame.pack(pady=14)
 
+        ctk.CTkButton(btn_frame, text="Back", width=90, fg_color="grey", hover_color="#555555", command=self._back).pack(side="left", padx=6)
         ctk.CTkButton(btn_frame, text="Up",   width=90, command=self._move_up).pack(side="left", padx=6)
         ctk.CTkButton(btn_frame, text="Down", width=90, command=self._move_down).pack(side="left", padx=6)
         ctk.CTkButton(
@@ -109,6 +111,10 @@ class ReorderWindow:
         self.paths[idx + 1], self.paths[idx] = self.paths[idx], self.paths[idx + 1]
         self.selected_idx = idx + 1
         self._refresh()
+
+    def _back(self):
+        self.go_back = True
+        self.root.destroy()
 
     def _merge(self):
         self.confirmed = True
@@ -202,18 +208,24 @@ class SuccessDialog(ctk.CTkToplevel):
 
 
 def main():
-    paths = pick_files()
+    while True:
+        paths = pick_files()
 
-    if not paths:
-        return
+        if not paths:
+            return
 
-    if not validate_pdfs(paths):
-        return
+        if not validate_pdfs(paths):
+            return
 
-    window = ReorderWindow(paths)
+        window = ReorderWindow(paths)
 
-    if not window.confirmed:
-        return
+        if window.go_back:
+            continue
+
+        if not window.confirmed:
+            return
+
+        break
 
     output_path = pick_output_path(window.paths[0])
     if not output_path:
