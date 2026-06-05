@@ -1,19 +1,12 @@
 import os
-from tkinter import messagebox
 
 import utils  # ensures pypdf is installed
 from pypdf import PdfWriter, PdfReader
 
 
 def validate_pdfs(paths):
-    invalid = [p for p in paths if not p.lower().endswith(".pdf")]
-    if invalid:
-        messagebox.showerror(
-            "Invalid Files",
-            "The following files are not PDFs:\n" + "\n".join(invalid),
-        )
-        return False
-    return True
+    """Return a list of invalid paths. Empty list means all files are valid."""
+    return [p for p in paths if not p.lower().endswith(".pdf")]
 
 
 def merge_pdfs(paths, output_path):

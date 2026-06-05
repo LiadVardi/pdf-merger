@@ -166,6 +166,57 @@ class SplashScreen:
         root.mainloop()
 
 
+class InvalidFilesDialog(ctk.CTkToplevel):
+    def __init__(self, invalid_paths):
+        _root = tk.Tk()
+        _root.withdraw()
+
+        super().__init__(_root)
+        self.title("Invalid Files")
+        self.resizable(False, False)
+
+        ctk.CTkLabel(
+            self, text="✗",
+            font=ctk.CTkFont(size=52, weight="bold"),
+            text_color="#c0392b",
+        ).pack(pady=(20, 2))
+
+        ctk.CTkLabel(
+            self, text="Invalid Files",
+            font=ctk.CTkFont(size=15, weight="bold"),
+        ).pack()
+
+        ctk.CTkLabel(
+            self, text="The following files are not PDFs and were not added:",
+            font=ctk.CTkFont(size=13),
+        ).pack(pady=(4, 0))
+
+        if len(invalid_paths) > 6:
+            container = ctk.CTkScrollableFrame(self, width=320, height=120)
+            container.pack(pady=(6, 4), padx=24)
+        else:
+            container = ctk.CTkFrame(self, fg_color="#e0e0e0", corner_radius=6)
+            container.pack(pady=(6, 4), padx=24, fill="x")
+
+        for path in invalid_paths:
+            ctk.CTkLabel(
+                container, text=os.path.basename(path),
+                font=ctk.CTkFont(size=12),
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(2, 2))
+
+        ctk.CTkButton(self, text="OK", width=100, command=self.destroy).pack(pady=(12, 16))
+
+        self.update_idletasks()
+        x = (self.winfo_screenwidth()  - 380) // 2
+        y = (self.winfo_screenheight() - self.winfo_reqheight()) // 2
+        self.geometry(f"380x{min(self.winfo_reqheight() + 20, 500)}+{x}+{y}")
+
+        self.grab_set()
+        _root.wait_window(self)
+        _root.destroy()
+
+
 class SuccessDialog(ctk.CTkToplevel):
     def __init__(self, output_path):
         _root = tk.Tk()
@@ -214,8 +265,10 @@ def main():
         if not paths:
             return
 
-        if not validate_pdfs(paths):
-            return
+        invalid = validate_pdfs(paths)
+        if invalid:
+            InvalidFilesDialog(invalid)
+            continue
 
         window = ReorderWindow(paths)
 
