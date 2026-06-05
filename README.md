@@ -5,7 +5,7 @@
 ![GUI](https://img.shields.io/badge/GUI-CustomTkinter-5C7CFA)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-A modern desktop application for merging multiple PDF files into one. Built with Python and CustomTkinter, it provides a clean, cross-theme GUI that guides the user from file selection through reordering to the final merged output — all without writing a single line of code or touching the terminal.
+A modern desktop application for merging multiple PDF files into one. Built with Python and CustomTkinter, it provides a clean, cross-theme GUI that guides the user from file selection through reordering to the final merged output - all without writing a single line of code or touching the terminal.
 
 ---
 
@@ -33,16 +33,16 @@ A modern desktop application for merging multiple PDF files into one. Built with
 
 ## Key Features
 
-- **Splash screen** — branded loading screen shown during startup so the app never feels frozen
-- **Multi-file selection** — pick any number of PDF files from anywhere on the filesystem
-- **PDF validation** — detects and reports non-PDF files before any processing begins, with a clear error dialog listing each invalid file by name
-- **Up / Down reordering** — intuitive Up / Down controls let the user set the exact merge order before committing
-- **Back navigation** — return to the file picker from the reorder window without restarting the app
-- **Custom save location** — choose the output filename and folder via a native save dialog; defaults to the source folder
-- **Styled dialogs** — success and error feedback rendered as CustomTkinter dialogs consistent with the rest of the UI
-- **Auto-dependency install** — missing packages (`pypdf`, `customtkinter`) are installed automatically on first run
-- **Dark / light mode** — follows the operating system appearance setting out of the box
-- **Single-file EXE** — ships as a standalone executable built with PyInstaller; no Python installation required for end users
+- **Splash screen** - branded loading screen shown during startup so the app never feels frozen
+- **Multi-file selection** - pick any number of PDF files from anywhere on the filesystem
+- **PDF validation** - detects and reports non-PDF files before any processing begins, with a clear error dialog listing each invalid file by name
+- **Up / Down reordering** - intuitive Up / Down controls let the user set the exact merge order before committing
+- **Back navigation** - return to the file picker from the reorder window without restarting the app
+- **Custom save location** - choose the output filename and folder via a native save dialog; defaults to the source folder
+- **Styled dialogs** - success and error feedback rendered as CustomTkinter dialogs consistent with the rest of the UI
+- **Auto-dependency install** - missing packages (`pypdf`, `customtkinter`) are installed automatically on first run
+- **Dark / light mode** - follows the operating system appearance setting out of the box
+- **Single-file EXE** - ships as a standalone executable built with PyInstaller; no Python installation required for end users
 
 ---
 
@@ -62,10 +62,10 @@ A modern desktop application for merging multiple PDF files into one. Built with
 
 ```
 pdf-merger/
-├── main.py          # Entry point — shows splash screen, then launches the app
+├── main.py          # Entry point - shows splash screen, then launches the app
 ├── gui.py           # All windows and dialogs (SplashScreen, ReorderWindow,
 │                    #   InvalidFilesDialog, SuccessDialog) and the main() flow
-├── merger.py        # PDF logic — validate_pdfs() and merge_pdfs()
+├── merger.py        # PDF logic - validate_pdfs() and merge_pdfs()
 ├── utils.py         # install_package() helper + auto-install blocks for dependencies
 └── requirements.txt # pypdf, customtkinter
 ```
@@ -92,7 +92,7 @@ python main.py
 python -m PyInstaller --onefile --windowed --name "PDF Merger" main.py
 ```
 
-The executable will be created at `dist/PDF Merger.exe`. Double-click it to run — no Python installation needed.
+The executable will be created at `dist/PDF Merger.exe`. Double-click it to run - no Python installation needed.
 
 ---
 
