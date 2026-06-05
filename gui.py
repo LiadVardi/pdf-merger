@@ -129,6 +129,47 @@ def pick_output_path(first_input_path):
     return path
 
 
+class SuccessDialog(ctk.CTkToplevel):
+    def __init__(self, output_path):
+        _root = tk.Tk()
+        _root.withdraw()
+
+        super().__init__(_root)
+        self.title("Success")
+        self.resizable(False, False)
+
+        ctk.CTkLabel(
+            self, text="✓",
+            font=ctk.CTkFont(size=52, weight="bold"),
+            text_color="#2d7d46",
+        ).pack(pady=(28, 4))
+
+        ctk.CTkLabel(
+            self, text="PDFs merged successfully!",
+            font=ctk.CTkFont(size=15, weight="bold"),
+        ).pack()
+
+        ctk.CTkLabel(
+            self, text=output_path,
+            font=ctk.CTkFont(size=13),
+            text_color="gray",
+            wraplength=340,
+        ).pack(pady=(8, 20), padx=24)
+
+        ctk.CTkButton(self, text="OK", width=100, command=self.destroy).pack(pady=(0, 28))
+
+        self.update_idletasks()
+        w = self.winfo_reqwidth()
+        h = self.winfo_reqheight()
+        x = (self.winfo_screenwidth() - w) // 2
+        y = (self.winfo_screenheight() - h) // 2
+        self.geometry(f"+{x}+{y}")
+
+        self.grab_set()
+        _root.wait_window(self)
+        _root.destroy()
+
+
 def main():
     paths = pick_files()
 
@@ -149,6 +190,6 @@ def main():
 
     try:
         merge_pdfs(window.paths, output_path)
-        messagebox.showinfo("Success", f"PDFs merged successfully!\n\nSaved to:\n{output_path}")
+        SuccessDialog(output_path)
     except Exception as e:
         messagebox.showerror("Merge Error", f"An error occurred during merging:\n{e}")
