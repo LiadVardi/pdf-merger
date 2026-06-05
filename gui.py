@@ -129,6 +129,37 @@ def pick_output_path(first_input_path):
     return path
 
 
+class SplashScreen:
+    def __init__(self):
+        root = ctk.CTk()
+        root.overrideredirect(True)
+
+        w, h = 380, 220
+        x = (root.winfo_screenwidth()  - w) // 2
+        y = (root.winfo_screenheight() - h) // 2
+        root.geometry(f"{w}x{h}+{x}+{y}")
+
+        ctk.CTkLabel(
+            root, text="PDF Merger",
+            font=ctk.CTkFont(size=28, weight="bold"),
+        ).place(relx=0.5, rely=0.38, anchor="center")
+
+        ctk.CTkLabel(
+            root, text="Merge your PDFs easily",
+            font=ctk.CTkFont(size=14),
+            text_color="gray",
+        ).place(relx=0.5, rely=0.58, anchor="center")
+
+        ctk.CTkLabel(
+            root, text="v1.0",
+            font=ctk.CTkFont(size=11),
+            text_color="gray",
+        ).place(relx=0.96, rely=0.92, anchor="se")
+
+        root.after(2500, root.destroy)
+        root.mainloop()
+
+
 class SuccessDialog(ctk.CTkToplevel):
     def __init__(self, output_path):
         _root = tk.Tk()
